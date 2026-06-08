@@ -222,16 +222,17 @@ function Dashboard() {
           const newStock = addRes.data.stock;
           
           // Add to results
-          const updatedResults = [...existingMatches, newStock];
+          // const updatedResults = [...existingMatches, newStock];
+          const updatedResults = [...matches, newStock];
           setMarketData(updatedResults);
           
           console.log(`Fetched ${query} from API and added to cache`);
         } catch (error) {
           // Stock not found or API error
-          if (existingMatches.length === 0) {
+          if (matches.length === 0) {
             setError(`No results found for "${query}". Try searching for popular stocks like RELIANCE, TCS, or AAPL.`);
           } else {
-            setMarketData(existingMatches);
+            setMarketData(matches);
           }
         }
       }
@@ -551,7 +552,7 @@ function Dashboard() {
             </h2>
 
             <div className="space-y-3">
-              {displayStocks.map((stock, index) => (
+              {(displayStocks || []).map((stock, index) => (
                 <div
                   key={index}
                   className="flex justify-between items-center p-3 bg-slate-800 rounded-lg hover:bg-slate-700 transition hover:shadow-lg hover:shadow-blue-500/10"
@@ -568,22 +569,22 @@ function Dashboard() {
                     <div className="transition-all duration-500 ease-in-out">
                       <p
                         className={`font-semibold transition-all duration-300 ${
-                          stock.change.includes("-")
+                          String(stock.change).includes("-")
                             ? "text-red-400 animate-pulse"
                             : "text-green-400 animate-pulse"
                         }`}
                       >
-                        ₹{stock.price}
+                        ₹{stock.price || stock.currentPrice || 0}
                       </p>
                     </div>
                     <p
                       className={`text-xs flex items-center gap-1 transition-all duration-300 ${
-                        stock.change.includes("-")
+                        String(stock.change).includes("-")
                           ? "text-red-400"
                           : "text-green-400"
                       }`}
                     >
-                      {stock.change.includes("-") ? "▼" : "▲"} {stock.change}
+                      {String(stock.change).includes("-") ? "▼" : "▲"} {stock.change}
                     </p>
                   </div>
                 </div>
